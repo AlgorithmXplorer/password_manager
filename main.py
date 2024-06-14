@@ -56,9 +56,6 @@ def change_a_password(path):
         file.writelines(lines)
 
     
-    
-    
-
 def main(path):
     num = question()
     if  num == 1:
