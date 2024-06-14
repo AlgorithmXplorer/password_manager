@@ -3,12 +3,13 @@ import datetime
 file_path = "C:/Users/VICTUS/Masaüstü/PYTHON_ALL/eğitim dışı kodlar/password_manager/passwords.txt"
 transactions = ["şifrelere bakma", "şifre ekleme", "şifre düzenleme","çıkış"] 
 #* fonksiyonların sonuna print ile "\n\n" str verisini yazdır 
+
 def file_read(path):
     with open(path,"r+",encoding = "utf-8") as file:
 
-        for i in file.readlines():
-            i = i.split(",")
-            print(f"internet sitesi: {i[0]}\nkullanıcı adı: {i[1]}\nşifre: {i[2]}\ndeğiştirme tarihi: {i[3]}")
+        for index,line in enumerate(file.readlines()):
+            line = line.split(",")
+            print(f"{index+1}:\ninternet sitesi: {line[0]}\nkullanıcı adı: {line[1]}\nşifre: {line[2]}\ndeğiştirme tarihi: {line[3]}")
             print("-"*50)
     print("\n\n")   
 
@@ -22,22 +23,41 @@ def question():
 
 def add_a_password(path):
     def date_func():
-        now = str(datetime.datetime.now()).split(" ")
-        year_month_day = now[0]
-        hour_minutes = now[1].split(":")
-        hour_minute = f"{hour_minutes[0]},{hour_minutes[1]}"
+        now = datetime.datetime.now()
+        year ,month,day,hour,minute  = now.year,  now.month, now.day, now.hour,now.minute
+        return f"{year}.{month}.{day}.{hour}.{minute},"
 
-        print(hour_minute)
-        
-    
-    date_func()
     website =  input("internet sitesi(HTTPS): ")
     user_name = input("kullanıcı adı: ")
     password = input("şifre: ")
+    print("\n\n")
 
     with open(path,"a",encoding="utf-8") as file:
-        file.write(f"{website},{user_name},{password},\n")
+        file.write(f"{website},{user_name},{password},{date_func()}\n")
 
+def change_a_password(path):
+    file_read(path)
+    changed_password_num = int(input("hangi şifre değişicek(numara girin): ")) -1
+    with open(path,"r+",encoding="utf-8") as file:
+        lines = file.readlines()
+    chang_lines = lines[changed_password_num].split(",")
+    new_password = input("yeni şifre: ")
+    chang_lines.insert(2,new_password)
+    chang_lines.pop(3)
+    new_line =",".join(chang_lines)
+    print(new_line)
+    #*yeni şifre 0-1-2 2. index e koyuldu ve eski index 3. index e geçti. ardından 3. indexdeki veri silindi.
+    #*  son liste str olması join metodu ile str oldu
+    #* aynı işlrem txt dosyasındaki satırlar için yapılcak
+    lines.insert(changed_password_num , new_line)
+    lines.pop(changed_password_num +1)
+    with open(path,"w",encoding="utf-8") as file:
+        print(lines)
+        file.writelines(lines)
+
+    
+    
+    
 
 def main(path):
     num = question()
@@ -50,7 +70,7 @@ def main(path):
         main(path)
     
     elif num == 3:
-        print("şifre düzenleme fonksiyonu")
+        change_a_password(path)
         main(path)
     elif num == 4:
         print("çıkıldı".upper())
