@@ -2,7 +2,7 @@
 import datetime
 file_path = "C:/Users/VICTUS/Masaüstü/PYTHON_ALL/eğitim dışı kodlar/password_manager/passwords.txt"
 delete_file_path = "C:/Users/VICTUS/Masaüstü/PYTHON_ALL/eğitim dışı kodlar/password_manager/deleted_passwords.txt"
-transactions = ["şifrelere bakma", "şifre ekleme", "şifre düzenleme","şifre silme","silinen şifreler bakma","çıkış"] 
+transactions = ["şifrelere bakma", "şifre ekleme", "şifre düzenleme","şifre silme","silinen şifre geri getirme","silinen şifrelere bakma","çıkış"] 
 #* fonksiyonların sonuna print ile "\n\n" str verisini yazdır 
 def date_func():
     now = datetime.datetime.now()
@@ -11,12 +11,20 @@ def date_func():
 
 #!eğerki silinmiş dosyalar okunuyorsa silinme tarihide yazıcak
 def file_read(path):
-    with open(path,"r+",encoding = "utf-8") as file:
+    path_1 = path.split("/")
+    if "deleted_passwords.txt" not in path_1:
+        with open(path,"r+",encoding = "utf-8") as file:
+            for index,line in enumerate(file.readlines(),1):
+                line = line.split(",")
+                print(f"{index}:\ninternet sitesi: {line[0]}\nkullanıcı adı: {line[1]}\nşifre: {line[2]}\ndeğiştirme tarihi: {line[3]}")
+                print("-"*50)
+    else:
+        with open(path,"r+",encoding = "utf-8") as file:
+            for index,line in enumerate(file.readlines(),1):
+                line = line.split(",")
+                print(f"{index}:\ninternet sitesi: {line[0]}\nkullanıcı adı: {line[1]}\nşifre: {line[2]}\noluşturma tarihi: {line[3]}\nsilinme tarihi: {line[4]},")
+                print("-"*50)
 
-        for index,line in enumerate(file.readlines(),1):
-            line = line.split(",")
-            print(f"{index}:\ninternet sitesi: {line[0]}\nkullanıcı adı: {line[1]}\nşifre: {line[2]}\ndeğiştirme tarihi: {line[3]}")
-            print("-"*50)
     print("\n\n")   
 
 #!try
@@ -38,7 +46,6 @@ def add_a_password(path):
     with open(path,"a",encoding="utf-8") as file:
         file.write(f"{website},{user_name},{password},{date_func()}\n")
 
-#! burda değiştirme tarihi yazıcak ayrıca diğer birimlerde değiştirilebilir olucak
 #!try
 def change_a_password(path):
     file_read(path)
@@ -73,7 +80,8 @@ def delete_a_password(path,path_2):
             line = lines[choise]
             print(lines)
             lines.pop(choise)
-            print(lines) 
+            print(lines)
+            line = line[:-1] + date_func() + "\n"
         with open(path,"w",encoding="utf-8") as file:
             file.writelines(lines)
         with open(path_2,"r+",encoding="utf-8") as file:
@@ -133,7 +141,10 @@ def main(path):
     elif num == 5:
         deleted_passwords(path,delete_file_path)
         main(path)
-    elif num == 6:
+    elif  num == 6:
+        file_read(delete_file_path)
+        main(path)
+    elif num == 7:
         print("çıkıldı".upper())
     
     
