@@ -1,11 +1,9 @@
 
 import json
-import re
 from datetime import datetime as date
 import os
 
-file_path = os.getcwd().replace("\\","/") + "/passwords.json"
-delete_data_path = os.getcwd().replace("\\","/") + "/delete_passwords.json"
+file_path , delete_data_path  = os.getcwd().replace("\\","/") + "/passwords.json" , os.getcwd().replace("\\","/") + "/delete_passwords.json"
 
 class password:
     def __init__(self,url,name,mail,password):
@@ -40,7 +38,7 @@ class password_repo:
 
     def register_a_password(self,param):
         if type(param) == password:
-            new_psw = param[0].dicti_maker()
+            new_psw = param.dicti_maker()
             self.normal_datas.append(new_psw)
             with open(self.path,"w",encoding="utf-8") as file:
                 json.dump(self.normal_datas,file , indent=4 , sort_keys=False)
@@ -55,7 +53,7 @@ class password_repo:
                 print(f"{key}  = {value}")
             print("")
     
-    def read__delete_passwords(self):
+    def read_deleted_passwords(self):
         for index,psw in enumerate(self.delete_datas,1):
             print(f"{index}".center(30,"-"))
             for key,value in psw.items():
@@ -72,18 +70,39 @@ class password_repo:
         with open(self.delete_path,"w",encoding="utf-8") as file:
             json.dump(self.delete_datas, file,indent=5,sort_keys=False)
         self.register_a_password(None)
-        
-repo = password_repo(path=file_path, delete_path= delete_data_path)
 
+    def change_a_password(self):
+        #* şifre seçim
+        self.read_passwords()
+        index = int(input("hangi şifre(no): ")) - 1
+        psw = self.normal_datas[index]  
+        self.normal_datas.pop(index)
 
-repo.read_passwords()
+        #*değişicek özellik seçim
+        print("*"*20)
+        for keys in psw:
+            if keys == "create_time":
+                break
+            print(f"-{keys}")
+        print("*"*20)
+        choice = input("hangisi değişicek(ismini girin): ")
+        new_setting = input(f"yeni {choice} ne olucak: ")
 
-repo.delete_a_password()
+        #* değişiklikleri kaydetme
+        psw[choice] = new_setting
+        self.normal_datas.insert(index,psw)
+        self.register_a_password(None)
 
+    def bring_back_a_password(self):
+        self.read__delete_passwords()
+        index = int(input("hangi şifre geri yüklenicek: ")) -1
+        psw = self.delete_datas[index]
 
+        self.delete_datas.pop(index)
+        with open(self.delete_path,"w",encoding="utf-8") as file:
+            json.dump(self.delete_datas,file)
 
-
-
-
+        self.normal_datas.append(psw) 
+        self.register_a_password(None)
 
 
