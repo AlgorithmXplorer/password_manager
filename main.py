@@ -3,7 +3,7 @@ import json
 from datetime import datetime as date
 import os
 
-file_path , delete_data_path  = os.getcwd().replace("\\","/") + "/passwords.json" , os.getcwd().replace("\\","/") + "/delete_passwords.json"
+file_path , delete_data_path  = os.getcwd().replace("\\","/") + "/passwords/passwords.json" , os.getcwd().replace("\\","/") + "/passwords/delete_passwords.json"
 
 class password:
     def __init__(self,url,name,mail,password):
@@ -94,7 +94,7 @@ class password_repo:
         self.register_a_password(None)
 
     def bring_back_a_password(self):
-        self.read__delete_passwords()
+        self.read_deleted_passwords()
         index = int(input("hangi şifre geri yüklenicek: ")) -1
         psw = self.delete_datas[index]
 
