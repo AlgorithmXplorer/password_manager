@@ -5,10 +5,10 @@ def registering():
     inp = inputs()
     repo.register_a_password(param= main.password(url=inp[0], name= inp[1], mail= inp[2], password= inp[-1]))
 def inputs():
-    name = input("kullanıcı ismi: ")
-    url = input("site url'si: ")
+    name = input("username: ")
+    url = input("website's url: ")
     mail = input("mail: ")
-    password = input("şifre: ")
+    password = input("password: ")
     return [url,name,mail,password]
 
 operations = {"register a password" : registering,
@@ -20,13 +20,12 @@ operations = {"register a password" : registering,
               "exit": "q"}
 while True:
     keys = []
-    print(keys)
     x = 1
     for key,value in operations.items():
         print(f"{x}-{key}")
         keys.append(key)
         x += 1
-    choice = int(input("hangi işlem(sayı): ")) -1
+    choice = int(input("which operation(number): ")) -1
     func = operations[keys[choice]]
     if func == "q":
         break
